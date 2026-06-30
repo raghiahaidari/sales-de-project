@@ -59,6 +59,8 @@ uvicorn main:app --reload
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in a browser, choose a file, and select **Upload to GCS**. The file is stored in the configured bucket using its original filename.
 
+![Upload Portal](images/upload_portal.png)
+
 
 ## Reporting
 
