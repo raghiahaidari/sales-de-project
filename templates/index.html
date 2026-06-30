@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GCS File Upload</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        --bg: #eef3f8;
+        --panel: #ffffff;
+        --ink: #162033;
+        --muted: #66748a;
+        --line: #d8e1ec;
+        --accent: #0f766e;
+        --accent-strong: #115e59;
+        --success-bg: #e9f8f1;
+        --success-line: #9ad7bd;
+        --success-ink: #14543d;
+        --warning-bg: #fff7e8;
+        --warning-line: #f0cb7a;
+        --warning-ink: #76510b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        align-items: center;
+        background:
+          linear-gradient(135deg, rgba(15, 118, 110, 0.12), transparent 32%),
+          linear-gradient(315deg, rgba(42, 87, 141, 0.12), transparent 28%),
+          var(--bg);
+        color: var(--ink);
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        min-height: 100vh;
+        padding: 32px 20px;
+      }
+
+      main {
+        background: var(--panel);
+        border: 1px solid rgba(216, 225, 236, 0.9);
+        border-radius: 8px;
+        box-shadow: 0 24px 70px rgba(22, 32, 51, 0.14);
+        max-width: 560px;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      .header {
+        border-bottom: 1px solid var(--line);
+        padding: 28px 30px 22px;
+      }
+
+      .eyebrow {
+        color: var(--accent-strong);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        font-size: clamp(1.75rem, 4vw, 2.35rem);
+        line-height: 1.08;
+        margin: 0 0 12px;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .bucket {
+        align-items: center;
+        background: #f7fafc;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        min-width: 0;
+        padding: 12px 14px;
+      }
+
+      .bucket-icon {
+        align-items: center;
+        background: #d9f3ec;
+        border-radius: 6px;
+        color: var(--accent-strong);
+        display: inline-flex;
+        flex: 0 0 34px;
+        height: 34px;
+        justify-content: center;
+        width: 34px;
+      }
+
+      .bucket-label {
+        color: var(--muted);
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+
+      .bucket-name {
+        display: block;
+        font-weight: 750;
+        overflow-wrap: anywhere;
+      }
+
+      .content {
+        padding: 24px 30px 30px;
+      }
+
+      form {
+        display: grid;
+        gap: 18px;
+      }
+
+      input[type="file"] {
+        background: #f8fbfd;
+        border: 1px dashed #8ca0b6;
+        border-radius: 6px;
+        color: var(--muted);
+        cursor: pointer;
+        font: inherit;
+        min-height: 92px;
+        padding: 28px 18px;
+        width: 100%;
+      }
+
+      input[type="file"]::file-selector-button {
+        background: var(--ink);
+        border: 0;
+        border-radius: 6px;
+        color: #ffffff;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 750;
+        margin-right: 14px;
+        padding: 10px 14px;
+      }
+
+      input[type="file"]:focus-visible,
+      button:focus-visible {
+        outline: 3px solid rgba(15, 118, 110, 0.24);
+        outline-offset: 2px;
+      }
+
+      button {
+        align-items: center;
+        background: var(--accent);
+        border: 0;
+        border-radius: 6px;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-flex;
+        font-size: 1rem;
+        font-weight: 800;
+        gap: 10px;
+        justify-content: center;
+        min-height: 48px;
+        padding: 13px 18px;
+        transition:
+          background 160ms ease,
+          transform 160ms ease,
+          box-shadow 160ms ease;
+      }
+
+      button:hover {
+        background: var(--accent-strong);
+        box-shadow: 0 10px 22px rgba(15, 118, 110, 0.24);
+        transform: translateY(-1px);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .notice {
+        border-radius: 6px;
+        font-weight: 650;
+        line-height: 1.45;
+        margin-bottom: 18px;
+        padding: 13px 14px;
+      }
+
+      .message {
+        background: var(--success-bg);
+        border: 1px solid var(--success-line);
+        color: var(--success-ink);
+      }
+
+      .warning {
+        background: var(--warning-bg);
+        border: 1px solid var(--warning-line);
+        color: var(--warning-ink);
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.45;
+        margin-top: 14px;
+      }
+
+      @media (max-width: 520px) {
+        body {
+          align-items: stretch;
+          padding: 16px;
+        }
+
+        main {
+          margin: auto 0;
+        }
+
+        .header,
+        .content {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+
+        input[type="file"]::file-selector-button {
+          display: block;
+          margin: 0 0 10px;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="header" aria-labelledby="page-title">
+        <p class="eyebrow">Google Cloud Storage</p>
+        <h1 id="page-title">Upload a file</h1>
+        <p>Select a local file and send it to the configured storage bucket.</p>
+
+        <div class="bucket" aria-label="Configured bucket">
+          <span class="bucket-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 8.5 12 4l8 4.5v7L12 20l-8-4.5v-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="m4 8.5 8 4.5 8-4.5M12 13v7" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>
+            <span class="bucket-label">Destination</span>
+            <span class="bucket-name">{{ bucket_name or "Bucket not configured" }}</span>
+          </span>
+        </div>
+      </section>
+
+      <section class="content">
+        {% if message %}
+          <div class="notice message">{{ message }}</div>
+        {% endif %}
+
+        {% if not bucket_name %}
+          <div class="notice warning">Set GCS_BUCKET_NAME before uploading files.</div>
+        {% endif %}
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+          <input type="file" name="file" aria-label="Choose file to upload" required>
+          <button type="submit">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 16V4m0 0L7 9m5-5 5 5M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Upload file
+          </button>
+        </form>
+        <p class="meta">The file keeps its original name when stored in the bucket.</p>
+      </section>
+    </main>
+  </body>
+</html>

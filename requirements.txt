@@ -1,0 +1,5 @@
+fastapi
+google-cloud-storage
+jinja2
+python-multipart
+uvicorn[standard]
